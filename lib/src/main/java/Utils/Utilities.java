@@ -1,3 +1,5 @@
+package Utils;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -6,12 +8,16 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.imageio.ImageIO;
 
-public class Utilities {
-    public static void check() throws NoSuchAlgorithmException, IOException {
+public abstract class Utilities {
+    public Utilities() {
         File andrew = new File("ANDREW.jpg");
-        if (!checkFileExists() ||
-                !(hash(andrew).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ"))) {
-            System.exit(0);
+        try {
+            if (!checkFileExists() ||
+                    !(hash(andrew).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ"))) {
+                System.exit(0);
+            }
+        } catch (Exception e) {
+            System.out.println("YOU DUMBASS");
         }
     }
 
@@ -20,7 +26,7 @@ public class Utilities {
         return file.exists();
     }
 
-    public static String hash(File imageFile) throws IOException, NoSuchAlgorithmException {
+    private static String hash(File imageFile) throws IOException, NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         try {
             BufferedImage img = ImageIO.read(imageFile);
