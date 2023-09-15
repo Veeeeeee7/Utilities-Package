@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
@@ -11,19 +14,13 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 public abstract class FileUtils {
-    public FileUtils() {
-        File andrew = new File("ANDREW.jpg");
-        try {
-            if (!checkFileExists() ||
-                    !(hash(andrew).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ"))) {
-                System.exit(0);
-            }
-        } catch (Exception e) {
-            System.out.println("YOU DUMBASS");
-        }
+
+    public FileUtils() throws URISyntaxException {
+        check();
     }
 
-    public static void createFile(String fileName) {
+    public static void createFile(String fileName) throws URISyntaxException {
+        check();
         File file = new File(fileName);
         try {
             file.createNewFile();
@@ -32,7 +29,8 @@ public abstract class FileUtils {
         }
     }
 
-    public static void writeFile(String fileName, String content) {
+    public static void writeFile(String fileName, String content) throws URISyntaxException {
+        check();
         try {
             File file = new File(fileName);
             FileWriter writer = new FileWriter(file);
@@ -43,12 +41,14 @@ public abstract class FileUtils {
         }
     }
 
-    public static void deleteFile(String fileName) {
+    public static void deleteFile(String fileName) throws URISyntaxException {
+        check();
         File file = new File(fileName);
         file.delete();
     }
 
-    public static void deleteDirectory(String directoryName) {
+    public static void deleteDirectory(String directoryName) throws URISyntaxException {
+        check();
         File directory = new File(directoryName);
         File[] files = directory.listFiles();
         for (File file : files) {
@@ -57,7 +57,8 @@ public abstract class FileUtils {
         directory.delete();
     }
 
-    public static String readFile(String fileName) {
+    public static String readFile(String fileName) throws URISyntaxException {
+        check();
         StringBuilder content = new StringBuilder();
         try {
             File file = new File(fileName);
@@ -73,9 +74,12 @@ public abstract class FileUtils {
         return "";
     }
 
-    private static boolean checkFileExists() {
-        File file = new File("ANDREW.jpg");
-        return file.exists();
+    private static boolean checkFileExists() throws URISyntaxException {
+        Path resourceDirectory = Paths.get("./bin/resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+        File andrewBin = new File(absolutePath + "/ANDREW.jpg");
+        File andrew = new File("resources/ANDREW.jpg");
+        return andrew.exists() || andrewBin.exists();
     }
 
     private static String hash(File imageFile) throws IOException, NoSuchAlgorithmException {
@@ -87,7 +91,29 @@ public abstract class FileUtils {
         } catch (Exception e) {
             System.out.println("Error in hashing");
         }
-        byte[] digest = md.digest();
-        return new String(digest);
+        return new String(md.digest());
     }
+
+    private static void check() throws URISyntaxException {
+        Path resourceDirectory = Paths.get("./bin/resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+        File andrewBin = new File(absolutePath + "/ANDREW.jpg");
+        File andrew = new File("resources/ANDREW.jpg");
+        try {
+            if (!checkFileExists() ||
+                    !((hash(andrew).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ")) ||
+                            (hash(andrewBin).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ")))) {
+                System.exit(0);
+            }
+        } catch (Exception e) {
+            System.out.println("YOU DUMBASS");
+        }
+    }
+
+    // public static void throwE() throws Exception {
+    // Path resourceDirectory = Paths.get("./bin/resources");
+    // String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+    // File andrew = new File(absolutePath + "/ANDREW.jpg");
+    // andrew.delete();
+    // }
 }
