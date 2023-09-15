@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +20,24 @@ public abstract class FileUtils {
         check();
     }
 
+    public static String sha1(String fileContents) throws URISyntaxException {
+        check();
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            byte[] messageDigest = md.digest(fileContents.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (Exception e) {
+            System.out.println("Error in hashing");
+        }
+        return null;
+    }
+
     public static void createFile(String fileName) throws URISyntaxException {
         check();
         File file = new File(fileName);
@@ -27,6 +46,12 @@ public abstract class FileUtils {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
+    }
+
+    public static void createDirectory(String directoryName) throws URISyntaxException {
+        check();
+        File directory = new File(directoryName);
+        directory.mkdir();
     }
 
     public static void writeFile(String fileName, String content) throws URISyntaxException {
@@ -74,11 +99,17 @@ public abstract class FileUtils {
         return "";
     }
 
+    public static boolean fileExists(String fileName) throws URISyntaxException {
+        check();
+        File file = new File(fileName);
+        return file.exists();
+    }
+
     private static boolean checkFileExists() throws URISyntaxException {
-        Path resourceDirectory = Paths.get("./bin/resources");
+        Path resourceDirectory = Paths.get("./bin");
         String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         File andrewBin = new File(absolutePath + "/ANDREW.jpg");
-        File andrew = new File("resources/ANDREW.jpg");
+        File andrew = new File("ANDREW.jpg");
         return andrew.exists() || andrewBin.exists();
     }
 
@@ -95,10 +126,10 @@ public abstract class FileUtils {
     }
 
     private static void check() throws URISyntaxException {
-        Path resourceDirectory = Paths.get("./bin/resources");
+        Path resourceDirectory = Paths.get("./bin");
         String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         File andrewBin = new File(absolutePath + "/ANDREW.jpg");
-        File andrew = new File("resources/ANDREW.jpg");
+        File andrew = new File("ANDREW.jpg");
         try {
             if (!checkFileExists() ||
                     !((hash(andrew).equals("\uFFFD\uFFFDv}z\uFFFDS\uFFFDF\u07DA\uFFFD\uFFFDI\uFFFDZ")) ||
