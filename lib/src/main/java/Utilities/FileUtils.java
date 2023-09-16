@@ -16,6 +16,9 @@ import javax.imageio.ImageIO;
 
 public abstract class FileUtils {
 
+    protected static Path resourceDirectory = Paths.get("bin");
+    protected static String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+
     public FileUtils() throws URISyntaxException {
         check();
     }
@@ -76,6 +79,10 @@ public abstract class FileUtils {
         check();
         File directory = new File(directoryName);
         File[] files = directory.listFiles();
+        if (files == null) {
+            directory.delete();
+            return;
+        }
         for (File file : files) {
             file.delete();
         }
@@ -126,8 +133,7 @@ public abstract class FileUtils {
     }
 
     private static void check() throws URISyntaxException {
-        Path resourceDirectory = Paths.get("./bin");
-        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+
         File andrewBin = new File(absolutePath + "/ANDREW.jpg");
         File andrew = new File("ANDREW.jpg");
         try {
