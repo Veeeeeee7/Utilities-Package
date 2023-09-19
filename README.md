@@ -14,18 +14,18 @@ public class Example {
     protected String content = "Hello World!";
 
     public static void main (String[] args) {
-        fileUtils.createFile(fileName);
-        fileUtils.createDirectory(folderName)
+        FileUtils.createFile(fileName);
+        FileUtils.createDirectory(folderName)
 
-        fileUtils.writeFile(fileName, content);
+        FileUtils.writeFile(fileName, content);
 
-        String content = fileUtils.readFile(fileName);
-        String sha = fileUtils.sha1(content);
+        String content = FileUtils.readFile(fileName);
+        String sha = FileUtils.sha1(content);
 
-        fileUtils.deleteFile(fileName);
-        fileUtils.deleteDirectory(folderName);
+        FileUtils.deleteFile(fileName);
+        FileUtils.deleteDirectory(folderName);
 
-        fileUtils.fileExists(fileName);
+        FileUtils.fileExists(fileName);
     }
 }
 ```
